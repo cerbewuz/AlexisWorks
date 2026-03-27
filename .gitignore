@@ -1,0 +1,43 @@
+## [Build Artifacts]
+[Bb]in/
+[Oo]bj/
+[Tt]emp/
+
+## [Visual Studio & VS Code]
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vshost.*
+*.vshost.*.manifest
+
+## [JetBrains / Rider]
+.idea/
+*.sln.iml
+*.idea.user
+
+## [ReSharper]
+_ReSharper*/
+*.[Rr]eSharper
+*.dotCover
+
+## [User Settings & Environment]
+appsettings.Development.json
+*.json.user
+
+## [Operating System Files]
+.DS_Store
+Thumbs.db
+
+## [Temporary/Output Files]
+*.log
+*.tmp
+*.bak
+[Oo]ut*/
+[Bb]uild*/
+*build_output*.txt
+out.html
+*.mdf
+*.ldf

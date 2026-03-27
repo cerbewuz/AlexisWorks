@@ -1,0 +1,113 @@
+@model Client
+@{
+    bool isModal = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                   Context.Request.Query["isModal"] == "true";
+    ViewData["Title"] = "Edit Client";
+}
+
+@if (!isModal)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card p-4">
+                <h5 class="card-title mb-4"><i class="bi bi-pencil-square me-2"></i>Edit Client</h5>
+                @{ await RenderForm(); }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    await RenderForm();
+    <script>$.validator.unobtrusive.parse('form');</script>
+}
+
+@{
+    async Task RenderForm()
+    {
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <h6 class="text-primary border-bottom pb-2 mb-3"><i class="bi bi-person me-2"></i>Personal Information</h6>
+            <div class="row">
+                <div class="col-md mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-md mb-3">
+                    <label asp-for="MiddleName" class="form-label"></label>
+                    <input asp-for="MiddleName" class="form-control" placeholder="M.I." />
+                    <span asp-validation-for="MiddleName" class="text-danger small"></span>
+                </div>
+                <div class="col-md mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label asp-for="Suffix" class="form-label"></label>
+                    <select asp-for="Suffix" class="form-select">
+                        <option value="">None</option>
+                        <option value="Jr.">Jr.</option>
+                        <option value="Sr.">Sr.</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <span asp-validation-for="Suffix" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">+63</span>
+                        <input asp-for="Phone" class="form-control" maxlength="10" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h6 class="text-primary border-bottom pb-2 mt-2 mb-3"><i class="bi bi-geo-alt me-2"></i>Address Details</h6>
+            <div class="mb-3">
+                <label asp-for="StreetVillageBarangay" class="form-label"></label>
+                <input asp-for="StreetVillageBarangay" class="form-control" />
+                <span asp-validation-for="StreetVillageBarangay" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Province" class="form-label"></label>
+                    <input asp-for="Province" class="form-control" />
+                    <span asp-validation-for="Province" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Update Client</button>
+                @if (isModal)
+                {
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                }
+                else
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                }
+            </div>
+        </form>
+    }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,93 @@
+@model Booking
+
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start">
+                <h5 class="card-title mb-4"><i class="bi bi-calendar-check me-2"></i>Booking #@Model.Id</h5>
+                <span class="badge-status @(Model.Status == "Confirmed" ? "badge-confirmed" : "badge-pending")">@Model.Status</span>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <small class="text-muted d-block">Client</small>
+                    <strong>@Model.Client.Name</strong>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block">Schedule</small>
+                    <strong>@Model.ScheduleDate.ToString("MMM dd, yyyy h:mm tt")</strong>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block">Total Amount</small>
+                    <strong class="text-primary fs-5">₱@Model.TotalAmount.ToString("N2")</strong>
+                </div>
+            </div>
+
+            <h6 class="fw-semibold mb-3">Service Line Items</h6>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Hours</th>
+                        <th>Rate</th>
+                        <th class="text-end">Line Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var li in Model.LineItems)
+                    {
+                        <tr>
+                            <td>@li.Service.Name</td>
+                            <td>@li.HoursRendered</td>
+                            <td>₱@li.Service.HourlyRate.ToString("N2")/hr</td>
+                            <td class="text-end fw-semibold">₱@li.LineTotal.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total:</td>
+                        <td class="text-end fw-bold text-primary">₱@Model.TotalAmount.ToString("N2")</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            @if (Model.Billing != null)
+            {
+                <hr />
+                <h6 class="fw-semibold mb-3">Invoice</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Amount Due</small>
+                        <strong>₱@Model.Billing.AmountDue.ToString("N2")</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Status</small>
+                        <span class="badge-status @(Model.Billing.PaymentStatus == "Paid" ? "badge-paid" : "badge-unpaid")">
+                            @Model.Billing.PaymentStatus
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Payment Date</small>
+                        <strong>@(Model.Billing.PaymentDate?.ToString("MMM dd, yyyy h:mm tt") ?? "—")</strong>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Back to Bookings</a>
+            @if (Model.Billing?.PaymentStatus == "Unpaid")
+            {
+                <form asp-controller="Billings" asp-action="ProcessPayment" asp-route-id="@Model.Billing.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success"><i class="bi bi-credit-card me-1"></i> Process Payment</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

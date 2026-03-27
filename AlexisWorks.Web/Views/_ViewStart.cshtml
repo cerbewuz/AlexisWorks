@@ -1,0 +1,5 @@
+@{
+    bool isModal = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                   Context.Request.Query["isModal"] == "true";
+    Layout = isModal ? null : "_Layout";
+}

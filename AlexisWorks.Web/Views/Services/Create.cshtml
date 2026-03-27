@@ -1,0 +1,60 @@
+@model Service
+@{
+    bool isModal = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                   Context.Request.Query["isModal"] == "true";
+    ViewData["Title"] = "Add Service";
+}
+
+@if (!isModal)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h5 class="card-title mb-4"><i class="bi bi-gear me-2"></i>New Service</h5>
+                @{ await RenderForm(); }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    await RenderForm();
+    <script>$.validator.unobtrusive.parse('form');</script>
+}
+
+@{
+    async Task RenderForm()
+    {
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Service Name</label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Plumbing" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HourlyRate" class="form-label">Hourly Rate (₱)</label>
+                <input asp-for="HourlyRate" class="form-control" type="number" step="0.01" min="0" placeholder="e.g. 500.00" />
+                <span asp-validation-for="HourlyRate" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Save Service</button>
+                @if (isModal)
+                {
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                }
+                else
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                }
+            </div>
+        </form>
+    }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
